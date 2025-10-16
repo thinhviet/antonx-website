@@ -1,0 +1,28 @@
+name: Deploy to Reg.ru (AntonX.io)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      REMOTE_PATH: /www/antonx.io
+      LOCAL_PATH: site/*   # 👉 đổi thành dist/*, build/* hoặc out/* sau này
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: SFTP Upload to Reg.ru
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.SFTP_HOST }}
+          port: ${{ secrets.SFTP_PORT }}
+          username: ${{ secrets.SFTP_USER }}
+          password: ${{ secrets.SFTP_PASS }}
+          local_path: ${{ env.LOCAL_PATH }}
+          remote_path: ${{ env.REMOTE_PATH }}
+          sftp_only: true
+          delete_remote_files: true
+
