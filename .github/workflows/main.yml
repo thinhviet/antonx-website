@@ -1,4 +1,4 @@
-name: Deploy to Reg.ru (AntonX.io)
+name: Deploy via FTPS to Reg.ru (AntonX.io)
 
 on:
   push:
@@ -7,22 +7,23 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      REMOTE_PATH: /www/antonx.io
-      LOCAL_PATH: site/*   # 👉 đổi thành dist/*, build/* hoặc out/* sau này
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: SFTP Upload to Reg.ru
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      # Upload qua FTPS (port 21)
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: ${{ secrets.SFTP_HOST }}
-          port: ${{ secrets.SFTP_PORT }}
-          username: ${{ secrets.SFTP_USER }}
-          password: ${{ secrets.SFTP_PASS }}
-          local_path: ${{ env.LOCAL_PATH }}
-          remote_path: ${{ env.REMOTE_PATH }}
-          sftp_only: true
-          delete_remote_files: true
-
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          protocol: ftps
+          port: 21
+          local-dir: site/            # đổi về dist/ build/ hoặc out/ khi dùng build thật
+          server-dir: /www/antonx.io/
+          state-name: .ftp-deploy-sync-state.json
+          dangerous-clean-slate: true
+          exclude: |
+            **/.git*
+            /.github/
