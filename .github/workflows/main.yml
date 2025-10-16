@@ -1,3 +1,4 @@
+
 name: Deploy via FTPS to Reg.ru (AntonX.io)
 
 on:
@@ -11,8 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Upload qua FTPS (port 21)
-      - name: FTP Deploy
+      - name: FTP Deploy (FTPS port 21)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -20,7 +20,7 @@ jobs:
           password: ${{ secrets.FTP_PASS }}
           protocol: ftps
           port: 21
-          local-dir: site/            # đổi về dist/ build/ hoặc out/ khi dùng build thật
+          local-dir: site/            # sau này đổi thành dist/ hoặc out/
           server-dir: /www/antonx.io/
           state-name: .ftp-deploy-sync-state.json
           dangerous-clean-slate: true
